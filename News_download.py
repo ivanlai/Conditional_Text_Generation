@@ -23,7 +23,8 @@ NEWS_AGGREGATOR_DIR = 'news_aggregator'
 ARTICLES_DIR        = 'articles'
 
 PUBLISHER_THRESHOLD = 500
-SAMPLE_SIZE         = 5000
+SAMPLE_SIZE         = 10000
+# SAMPLE_SIZE         = 10
 
 #------------------------------------------------------------------------#
 
@@ -35,8 +36,10 @@ def download_news_aggregator_data():
 #------------------------------------------------------------------------#
 def download_articles(df):
     t0 = time.time()
-    count, success_count, fail_count = 0, 0, 0
 
+    print(f"{os.getpid()}: Number of rows in df {len(df) :,}.")
+
+    count, success_count, fail_count = 0, 0, 0
     for id, url in zip(df.ID, df.URL):
         article = Article(url, language="en")
         try:
@@ -63,8 +66,9 @@ def download_articles(df):
 
         #-----------------------------------#
         if success_count >= SAMPLE_SIZE or fail_count >= 3*SAMPLE_SIZE:
-            print(f"{os.getpid()} done.")
             break
+
+    print(f"{os.getpid()} exit with {success_count :,} successes and {fail_count :,} fails.")
 
 #------------------------------------------------------------------------#
 
